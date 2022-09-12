@@ -17,6 +17,13 @@ const badRequest = (request, response, params) => {
     message: 'This request has the required parameters',
   };
 
+  if (!params.valid || params.valid !== 'true') {
+    responseJSON.message = 'Missing valid query param equal to true';
+    responseJSON.id = 'badRequestMissingParam';
+    return respondJSON(request, response, 400, responseJSON);
+  }
+
+  return respondJSON(request, response, 200, responseJSON);
 };
 
 const notFound = (request, response) => {
@@ -25,6 +32,7 @@ const notFound = (request, response) => {
     id: 'notFound',
   };
 
+  return respondJSON(request, response, 404, responseJSON);
 };
 
 module.exports = {

@@ -27,13 +27,30 @@
   </style>
   
   <script>
-    const handleResponse = (response) => {
+    const handleResponse = async (response) => {
+      const content = document.querySelector('#content');
+      switch (response.status) {
+        case 200:
+          content.innerHTML = `<b>Success</b>`;
+          break;
+        case 400:
+          content.innerHTML = `<b>Bad Request</b>`;
+          break;
+        case 404:
+          content.innerHTML = `<b>Not Found</b>`;
+          break;
+        default:
+          content.innerHTML = `<p>Error code not implemented by client</p>`;
+          break;
+      }
 
+      const resObj = await response.json();
+      content.innerHTML += `<p>${resObj.message}</p>`
     };
     
-    const sendFetch = (url) => {
-
-      //handleResponse(response);
+    const sendFetch = async (url) => {
+      const response = await fetch(url);
+      handleResponse(response);
     };
 
     const init = () => {
@@ -41,7 +58,9 @@
       const badRequestButton = document.querySelector("#badRequest");
       const notFoundButton = document.querySelector("#notFound");
 
-      
+      successButton.addEventListener('click', () => sendFetch('/success'));
+      badRequestButton.addEventListener('click', () => sendFetch('/badRequest'));
+      notFoundButton.addEventListener('click', () => sendFetch('/spaghetti'));
     };
 
     window.onload = init;
